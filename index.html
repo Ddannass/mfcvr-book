@@ -134,23 +134,23 @@
     <div><img src="img/low/24.jpg" class="page-picture" alt="Страница 24"></div>
     <div><img src="img/high/25.png" class="page-picture" alt="Страница 25"></div>
 
-    <div><img src="img/low/26.jpg" class="page-picture" alt="Страница 26"></div>
-    <div><img src="img/high/27.png" class="page-picture" alt="Страница 27"></div>
+    <div><img src="img/low/26.jpg" class="page-picture" alt="Страница 26" loading="lazy"></div>
+    <div><img src="img/high/27.png" class="page-picture" alt="Страница 27" loading="lazy"></div>
 
-    <div><img src="img/low/28.jpg" class="page-picture" alt="Страница 28"></div>
-    <div><img src="img/high/29.png" class="page-picture" alt="Страница 29"></div>
+    <div><img src="img/low/28.jpg" class="page-picture" alt="Страница 28" loading="lazy"></div>
+    <div><img src="img/high/29.png" class="page-picture" alt="Страница 29" loading="lazy"></div>
 
-    <div><img src="img/low/30.jpg" class="page-picture" alt="Страница 30"></div>
-    <div><img src="img/high/31.png" class="page-picture" alt="Страница 31"></div>
+    <div><img src="img/low/30.jpg" class="page-picture" alt="Страница 30" loading="lazy"></div>
+    <div><img src="img/high/31.png" class="page-picture" alt="Страница 31" loading="lazy"></div>
 
-    <div><img src="img/low/32.jpg" class="page-picture" alt="Страница 32"></div>
-    <div><img src="img/high/33.png" class="page-picture" alt="Страница 33"></div>
+    <div><img src="img/low/32.jpg" class="page-picture" alt="Страница 32" loading="lazy"></div>
+    <div><img src="img/high/33.png" class="page-picture" alt="Страница 33" loading="lazy"></div>
 
-    <div><img src="img/low/34.jpg" class="page-picture" alt="Страница 34"></div>
-    <div><img src="img/high/35.png" class="page-picture" alt="Страница 35"></div>
+    <div><img src="img/low/34.jpg" class="page-picture" alt="Страница 34" loading="lazy"></div>
+    <div><img src="img/high/35.png" class="page-picture" alt="Страница 35" loading="lazy"></div>
 
-    <div><img src="img/low/36.jpg" class="page-picture" alt="Страница 36"></div>
-    <div><img src="img/high/37.png" class="page-picture" alt="Страница 37"></div>
+    <div><img src="img/low/36.jpg" class="page-picture" alt="Страница 36" loading="lazy"></div>
+    <div><img src="img/high/37.png" class="page-picture" alt="Страница 37" loading="lazy"></div>
   </div>
 
   <div class="controls">
@@ -235,39 +235,54 @@ $(function () {
   $('#nextBtn').on('click', function () { $book.turn('next'); });
 
   $(document).on('keydown', function (e) {
-    if (e.key === 'ArrowLeft')  $book.turn('previous');
-    if (e.key === 'ArrowRight') $book.turn('next');
-    if (e.key === 's' || e.key === 'S') speakCurrentPage();
-  });
+  if (e.key === 'ArrowLeft')  $book.turn('previous');
+  if (e.key === 'ArrowRight') $book.turn('next');
+  if (e.key === 's' || e.key === 'S') toggleSpeak();
+});
 
-  function speakCurrentPage() {
-    var pageNumber = $book.turn('page');
-    var view = $book.turn('view', pageNumber);
-    var realPage = Array.isArray(view) ? (view[0] != null ? view[0] : view[1]) : view;
-    realPage = parseInt(realPage, 10);
-    var audioUrl = audioMap[realPage];
-    if (!audioUrl) {
-      alert('Аудио для этого разворота не задано');
-      return;
-    }
-
+function toggleSpeak() {
+  // если уже играет — просто остановить
+  if (currentAudio && !currentAudio.paused) {
     stopAudio();
-    currentAudio = new Audio(audioUrl);
-    currentAudio.onplay = function () { $('#speakBtn').text('⏹️'); };
-    currentAudio.onended = function () { $('#speakBtn').text('🔊'); };
-    currentAudio.onerror = function () {
-      alert('Ошибка загрузки аудио:\n' + audioUrl);
-      $('#speakBtn').text('🔊');
-    };
-    currentAudio.play().catch(function () {
-      alert('Автопроигрывание заблокировано. Нажми кнопку ещё раз.');
-    });
+    return;
   }
 
-  $('#speakBtn').on('click', speakCurrentPage);
+  var pageNumber = $book.turn('page');
+  var view = $book.turn('view', pageNumber);
+
+  var realPage = Array.isArray(view) ? (view[0] != null ? view[0] : view[1]) : view;
+  realPage = parseInt(realPage, 10);
+  if (isNaN(realPage)) {
+    alert('Не удалось определить страницу для озвучки');
+    return;
+  }
+
+  var audioUrl = audioMap[realPage];
+  if (!audioUrl) {
+    alert('Аудио для этого разворота не задано');
+    return;
+  }
+
+  stopAudio();
+  currentAudio = new Audio(audioUrl);
+
+  currentAudio.onplay  = function () { $('#speakBtn').text('⏹️'); };
+  currentAudio.onended = function () { $('#speakBtn').text('🔊'); };
+  currentAudio.onerror = function () {
+    alert('Ошибка загрузки аудио:\n' + audioUrl);
+    $('#speakBtn').text('🔊');
+  };
+
+  currentAudio.play().catch(function () {
+    alert('Автопроигрывание заблокировано. Нажми кнопку ещё раз.');
+  });
+}
+
+$('#speakBtn').on('click', toggleSpeak);
 });
 </script>
 
 </body>
 </html>
+
 
