@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Сказочная экскурсия талончика</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Georgia', serif;
+      background-color: #f0e7d8;
+      background-image: url("https://sun7-24.userapi.com/s/v1/ig2/Gzp44pRO28dtSF2v3IcdEkCnO2KZJyQrB2chXuumGNwNVcjDykDgJ0MtrYpQM1aFgXMdLRwzRkGvNdGwsG50RTox.jpg");
+      background-repeat: repeat;
+      background-position: center top;
+      background-attachment: fixed;
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      text-align: center;
+    }
+
+    #flipbook {
+      width: 1200px;
+      height: 800px;
+      margin: 0 auto 20px;
+      overflow: hidden;
+      display: inline-block;
+    }
+
+    #flipbook .page,
+    #flipbook .turn-page {
+      width: 600px !important;
+      height: 800px !important;
+    }
+
+    #flipbook div {
+      background-color: #fff;
+    }
+
+    .page-picture {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .hidden-first-page {
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+    .hidden-first-page * {
+      display: none !important;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      max-width: 1200px;
+      margin: 0 auto;
+      gap: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #8b4513;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+      font-weight: bold;
+    }
+
+    button:hover { background: #a0522d; }
+    button:disabled { background: #ccc; cursor: not-allowed; }
+
+    .page-counter {
+      color: #8b4513;
+      font-size: 16px;
+      font-weight: bold;
+    }
+  </style>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/blasten/turn.js/turn.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <div id="flipbook">
+    <div class="hidden-first-page"></div>
+
+    <div class="cover-page"><img src="img/low/2.jpg" class="page-picture" alt="Страница 2"></div>
+    <div class="cover-page"><img src="img/low/3.jpg" class="page-picture" alt="Страница 3"></div>
+
+    <div><img src="img/low/4.jpg" class="page-picture" alt="Страница 4"></div>
+    <div><img src="img/high/5.png" class="page-picture" alt="Страница 5"></div>
+
+    <div><img src="img/low/6.jpg" class="page-picture" alt="Страница 6"></div>
+    <div><img src="img/high/7.png" class="page-picture" alt="Страница 7"></div>
+
+    <div><img src="img/low/8.jpg" class="page-picture" alt="Страница 8"></div>
+    <div><img src="img/high/9.png" class="page-picture" alt="Страница 9"></div>
+
+    <div><img src="img/low/10.jpg" class="page-picture" alt="Страница 10"></div>
+    <div><img src="img/high/11.png" class="page-picture" alt="Страница 11"></div>
+
+    <div><img src="img/low/12.jpg" class="page-picture" alt="Страница 12"></div>
+    <div><img src="img/high/13.png" class="page-picture" alt="Страница 13"></div>
+
+    <div><img src="img/low/14.jpg" class="page-picture" alt="Страница 14"></div>
+    <div><img src="img/high/15.png" class="page-picture" alt="Страница 15"></div>
+
+    <div><img src="img/low/16.jpg" class="page-picture" alt="Страница 16"></div>
+    <div><img src="img/high/17.png" class="page-picture" alt="Страница 17"></div>
+
+    <div><img src="img/low/18.jpg" class="page-picture" alt="Страница 18"></div>
+    <div><img src="img/high/19.png" class="page-picture" alt="Страница 19"></div>
+
+    <div><img src="img/low/20.jpg" class="page-picture" alt="Страница 20"></div>
+    <div><img src="img/high/21.png" class="page-picture" alt="Страница 21"></div>
+
+    <div><img src="img/low/22.jpg" class="page-picture" alt="Страница 22"></div>
+    <div><img src="img/high/23.png" class="page-picture" alt="Страница 23"></div>
+
+    <div><img src="img/low/24.jpg" class="page-picture" alt="Страница 24"></div>
+    <div><img src="img/high/25.png" class="page-picture" alt="Страница 25"></div>
+
+    <div><img src="img/low/26.jpg" class="page-picture" alt="Страница 26"></div>
+    <div><img src="img/high/27.png" class="page-picture" alt="Страница 27"></div>
+
+    <div><img src="img/low/28.jpg" class="page-picture" alt="Страница 28"></div>
+    <div><img src="img/high/29.png" class="page-picture" alt="Страница 29"></div>
+
+    <div><img src="img/low/30.jpg" class="page-picture" alt="Страница 30"></div>
+    <div><img src="img/high/31.png" class="page-picture" alt="Страница 31"></div>
+
+    <div><img src="img/low/32.jpg" class="page-picture" alt="Страница 32"></div>
+    <div><img src="img/high/33.png" class="page-picture" alt="Страница 33"></div>
+
+    <div><img src="img/low/34.jpg" class="page-picture" alt="Страница 34"></div>
+    <div><img src="img/high/35.png" class="page-picture" alt="Страница 35"></div>
+
+    <div><img src="img/low/36.jpg" class="page-picture" alt="Страница 36"></div>
+    <div><img src="img/high/37.png" class="page-picture" alt="Страница 37"></div>
+  </div>
+
+  <div class="controls">
+    <button id="prevBtn">← Назад</button>
+    <span class="page-counter"><span id="currentPage">2</span> / <span id="totalPages">37</span></span>
+    <button id="speakBtn" title="Озвучить страницу (S)">🔊</button>
+    <button id="nextBtn">Вперёд →</button>
+  </div>
+</div>
+
+<script>
+$(function () {
+  var $book = $('#flipbook');
+  if ($book.length === 0) return;
+
+  var audioMap = {
+    2: 'https://getfile.dokpub.com/yandex/get/https://disk.yandex.ru/d/VxPc8XMfwdYhjw.mp3',
+    4: 'https://getfile.dokpub.com/yandex/get/https://disk.yandex.ru/d/VxPc8XMfwdYhjw.mp3',
+    6: 'https://getfile.dokpub.com/yandex/get/https://disk.yandex.ru/d/TROF3-xUfpGqzQ.mp3'
+  };
+
+  $book.turn({
+    width: 1200,
+    autoCenter: true,
+    elevation: 50,
+    gradients: true,
+    display: 'double',
+    page: 2
+  });
+
+  $book.bind('turning', function (e, page) {
+    if (page === 1) {
+      e.preventDefault();
+      $book.turn('page', 2);
+    }
+  });
+
+  var totalPages = $book.turn('pages');
+  $('#totalPages').text(totalPages);
+
+  var currentAudio = null;
+
+  function stopAudio() {
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+    }
+    $('#speakBtn').text('🔊');
+  }
+
+  function updateCounter() {
+    var page = $book.turn('page');
+    var view = $book.turn('view', page);
+    var leftPage = Array.isArray(view) ? (view[0] || view[1]) : page;
+    var rightPage = Array.isArray(view) ? (view[1] || view[0]) : page;
+
+    $('#currentPage').text(page);
+    $('#prevBtn').prop('disabled', leftPage <= 2);
+    $('#nextBtn').prop('disabled', !rightPage || rightPage >= totalPages);
+    stopAudio();
+  }
+
+  $book.bind('turned', updateCounter);
+  updateCounter();
+
+  $('#prevBtn').on('click', function () { $book.turn('previous'); });
+  $('#nextBtn').on('click', function () { $book.turn('next'); });
+
+  $(document).on('keydown', function (e) {
+    if (e.key === 'ArrowLeft')  $book.turn('previous');
+    if (e.key === 'ArrowRight') $book.turn('next');
+    if (e.key === 's' || e.key === 'S') speakCurrentPage();
+  });
+
+  function speakCurrentPage() {
+    var pageNumber = $book.turn('page');
+    var view = $book.turn('view', pageNumber);
+    var realPage = Array.isArray(view) ? (view[0] != null ? view[0] : view[1]) : view;
+    realPage = parseInt(realPage, 10);
+    var audioUrl = audioMap[realPage];
+    if (!audioUrl) {
+      alert('Аудио для этого разворота не задано');
+      return;
+    }
+
+    stopAudio();
+    currentAudio = new Audio(audioUrl);
+    currentAudio.onplay = function () { $('#speakBtn').text('⏹️'); };
+    currentAudio.onended = function () { $('#speakBtn').text('🔊'); };
+    currentAudio.onerror = function () {
+      alert('Ошибка загрузки аудио:\n' + audioUrl);
+      $('#speakBtn').text('🔊');
+    };
+    currentAudio.play().catch(function () {
+      alert('Автопроигрывание заблокировано. Нажми кнопку ещё раз.');
+    });
+  }
+
+  $('#speakBtn').on('click', speakCurrentPage);
+});
+</script>
+
+</body>
+</html>
