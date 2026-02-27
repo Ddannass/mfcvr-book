@@ -217,16 +217,25 @@ $(function () {
   }
 
   function updateCounter() {
-    var page = $book.turn('page');
-    var view = $book.turn('view', page);
-    var leftPage = Array.isArray(view) ? (view[0] || view[1]) : page;
-    var rightPage = Array.isArray(view) ? (view[1] || view[0]) : page;
+  var page = $book.turn('page');
+  var view = $book.turn('view', page);
+  var leftPage = Array.isArray(view) ? (view[0] || view[1]) : page;
+  var rightPage = Array.isArray(view) ? (view[1] || view[0]) : page;
 
-    $('#currentPage').text(page);
-    $('#prevBtn').prop('disabled', leftPage <= 2);
-    $('#nextBtn').prop('disabled', !rightPage || rightPage >= totalPages);
-    stopAudio();
+  $('#currentPage').text(page);
+  $('#prevBtn').prop('disabled', leftPage <= 2);
+  $('#nextBtn').prop('disabled', !rightPage || rightPage >= totalPages);
+
+  // --- скрытие кнопки озвучки на развороте 2–3 ---
+  if (leftPage === 2 || rightPage === 3) {
+    $('#speakBtn').hide();
+  } else {
+    $('#speakBtn').show();
   }
+
+  stopAudio();
+}
+
 
   $book.bind('turned', updateCounter);
   updateCounter();
@@ -284,5 +293,6 @@ $('#speakBtn').on('click', toggleSpeak);
 
 </body>
 </html>
+
 
 
