@@ -7,25 +7,22 @@
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
     html, body {
       width: 100%;
-      height: 100%;
-    }
-    body {
-     font-family: 'Georgia', serif;
-     background-color: #f0e7d8;
-     background-image: url('img/background.jpg');
-     background-repeat: no-repeat;
-     background-position: center center;
-     background-attachment: scroll;
-     background-size: cover;
+      min-height: 100vh;
     }
 
-    @media (max-width: 768px) {
-      body {
-        min-height: 100vh;
-      }
+    body {
+      font-family: 'Georgia', serif;
+      background-color: #f0e7d8;
+      background-image: url('img/background.jpg');
+      background-repeat: no-repeat;
+      background-position: center top;
+      background-size: cover;
+      background-attachment: scroll;
     }
+
     .container {
       width: 100%;
       text-align: center;
@@ -175,24 +172,24 @@ $(function () {
   if ($book.length === 0) return;
 
   var audioMap = {
-    2:  'audio/2.mp3',   // если нужно аудио для 2-й, иначе эту строку можно убрать
+    2:  'audio/2.mp3',
     4:  'audio/4.mp3',
     6:  'audio/6.mp3',
     8:  'audio/8.mp3',
-   10: 'audio/10.mp3',
-   12: 'audio/12.mp3',
-   14: 'audio/14.mp3',
-   16: 'audio/16.mp3',
-   18: 'audio/18.mp3',
-   20: 'audio/20.mp3',
-   22: 'audio/22.mp3',
-   24: 'audio/24.mp3',
-   26: 'audio/26.mp3',
-   28: 'audio/28.mp3',
-   30: 'audio/30.mp3',
-   32: 'audio/32.mp3',
-   34: 'audio/34.mp3',
-   36: 'audio/36.mp3'
+    10: 'audio/10.mp3',
+    12: 'audio/12.mp3',
+    14: 'audio/14.mp3',
+    16: 'audio/16.mp3',
+    18: 'audio/18.mp3',
+    20: 'audio/20.mp3',
+    22: 'audio/22.mp3',
+    24: 'audio/24.mp3',
+    26: 'audio/26.mp3',
+    28: 'audio/28.mp3',
+    30: 'audio/30.mp3',
+    32: 'audio/32.mp3',
+    34: 'audio/34.mp3',
+    36: 'audio/36.mp3'
   };
 
   $book.turn({
@@ -225,25 +222,23 @@ $(function () {
   }
 
   function updateCounter() {
-  var page = $book.turn('page');
-  var view = $book.turn('view', page);
-  var leftPage = Array.isArray(view) ? (view[0] || view[1]) : page;
-  var rightPage = Array.isArray(view) ? (view[1] || view[0]) : page;
+    var page = $book.turn('page');
+    var view = $book.turn('view', page);
+    var leftPage = Array.isArray(view) ? (view[0] || view[1]) : page;
+    var rightPage = Array.isArray(view) ? (view[1] || view[0]) : page;
 
-  $('#currentPage').text(page);
-  $('#prevBtn').prop('disabled', leftPage <= 2);
-  $('#nextBtn').prop('disabled', !rightPage || rightPage >= totalPages);
+    $('#currentPage').text(page);
+    $('#prevBtn').prop('disabled', leftPage <= 2);
+    $('#nextBtn').prop('disabled', !rightPage || rightPage >= totalPages);
 
-  // --- скрытие кнопки озвучки на развороте 2–3 ---
-  if (leftPage === 2 || rightPage === 3) {
-    $('#speakBtn').hide();
-  } else {
-    $('#speakBtn').show();
+    if (leftPage === 2 || rightPage === 3) {
+      $('#speakBtn').hide();
+    } else {
+      $('#speakBtn').show();
+    }
+
+    stopAudio();
   }
-
-  stopAudio();
-}
-
 
   $book.bind('turned', updateCounter);
   updateCounter();
@@ -252,62 +247,51 @@ $(function () {
   $('#nextBtn').on('click', function () { $book.turn('next'); });
 
   $(document).on('keydown', function (e) {
-  if (e.key === 'ArrowLeft')  $book.turn('previous');
-  if (e.key === 'ArrowRight') $book.turn('next');
-  if (e.key === 's' || e.key === 'S') toggleSpeak();
-});
-
-function toggleSpeak() {
-  // если уже играет — просто остановить
-  if (currentAudio && !currentAudio.paused) {
-    stopAudio();
-    return;
-  }
-
-  var pageNumber = $book.turn('page');
-  var view = $book.turn('view', pageNumber);
-
-  var realPage = Array.isArray(view) ? (view[0] != null ? view[0] : view[1]) : view;
-  realPage = parseInt(realPage, 10);
-  if (isNaN(realPage)) {
-    alert('Не удалось определить страницу для озвучки');
-    return;
-  }
-
-  var audioUrl = audioMap[realPage];
-  if (!audioUrl) {
-    alert('Аудио для этого разворота не задано');
-    return;
-  }
-
-  stopAudio();
-  currentAudio = new Audio(audioUrl);
-
-  currentAudio.onplay  = function () { $('#speakBtn').text('⏹️'); };
-  currentAudio.onended = function () { $('#speakBtn').text('🔊'); };
-  currentAudio.onerror = function () {
-    alert('Ошибка загрузки аудио:\n' + audioUrl);
-    $('#speakBtn').text('🔊');
-  };
-
-  currentAudio.play().catch(function () {
-    alert('Автопроигрывание заблокировано. Нажми кнопку ещё раз.');
+    if (e.key === 'ArrowLeft')  $book.turn('previous');
+    if (e.key === 'ArrowRight') $book.turn('next');
+    if (e.key === 's' || e.key === 'S') toggleSpeak();
   });
-}
 
-$('#speakBtn').on('click', toggleSpeak);
+  function toggleSpeak() {
+    if (currentAudio && !currentAudio.paused) {
+      stopAudio();
+      return;
+    }
+
+    var pageNumber = $book.turn('page');
+    var view = $book.turn('view', pageNumber);
+
+    var realPage = Array.isArray(view) ? (view[0] != null ? view[0] : view[1]) : view;
+    realPage = parseInt(realPage, 10);
+    if (isNaN(realPage)) {
+      alert('Не удалось определить страницу для озвучки');
+      return;
+    }
+
+    var audioUrl = audioMap[realPage];
+    if (!audioUrl) {
+      alert('Аудио для этого разворота не задано');
+      return;
+    }
+
+    stopAudio();
+    currentAudio = new Audio(audioUrl);
+
+    currentAudio.onplay  = function () { $('#speakBtn').text('⏹️'); };
+    currentAudio.onended = function () { $('#speakBtn').text('🔊'); };
+    currentAudio.onerror = function () {
+      alert('Ошибка загрузки аудио:\n' + audioUrl);
+      $('#speakBtn').text('🔊');
+    };
+
+    currentAudio.play().catch(function () {
+      alert('Автопроигрывание заблокировано. Нажми кнопку ещё раз.');
+    });
+  }
+
+  $('#speakBtn').on('click', toggleSpeak);
 });
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
