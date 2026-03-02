@@ -15,12 +15,20 @@
 
     body {
       font-family: 'Georgia', serif;
-      background-color: #f0e7d8;
+      background-color: #f0e7d8; /* запасной цвет фона */
+      position: relative;
+      z-index: 0;
+    }
+
+    /* Слой-фон, всегда закрывает весь экран */
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
       background-image: url('img/background.jpg');
       background-repeat: no-repeat;
-      background-position: center top;
+      background-position: center center;
       background-size: cover;
-      background-attachment: scroll;
     }
 
     .container {
@@ -98,6 +106,8 @@
   <script src="https://cdn.jsdelivr.net/gh/blasten/turn.js/turn.min.js"></script>
 </head>
 <body>
+
+<div class="bg-layer"></div> <!-- Фон -->
 
 <div class="container">
   <div id="flipbook">
